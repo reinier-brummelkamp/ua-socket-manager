@@ -1,0 +1,31 @@
+{
+  "name": "ua-socket-manager",
+  "version": "1.0.0",
+  "authors": [
+    "Reinier Brummelkamp <reinier@urbanautomation.co.za>"
+  ],
+  "description": "Socket manager component for the Solitude framework",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "ua-socket-manager"
+  ],
+  "main": "SocketManager.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/reinier-brummelkamp/ua-socket-manager/",
+  "ignore": [
+    "/.gitattributes",
+    "/.gitignore",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "sockjs-client": "1.0.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
