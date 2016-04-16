@@ -1,6 +1,6 @@
 {
   "name": "ua-socket-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "Reinier Brummelkamp <reinier@urbanautomation.co.za>"
   ],
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0",
-    "sockjs-client": "1.0.1"
+    "ua-imports": "~1.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
