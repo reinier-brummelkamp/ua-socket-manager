@@ -1,124 +1,126 @@
-﻿
-namespace Solitude
-{
-    using System.Collections.Concurrent;
-    using System.Net.WebSockets;
-    using Tmds.WebSockets;
-    using System;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-    public class UaSocketMessage
-    {
-        public string SocketId { get; set; }
-        public string Action { get; set; }
-        public dynamic ActionParameters { get; set; }
-        public string Message { get; set; }
-    }
+﻿// NOTE:
+// =====
+// This code has not been ported to ASP.NET Core yet, so is commented out for now.  
+//
+// namespace Solitude
+// {
+//     using System.Collections.Concurrent;
+//     using System.Net.WebSockets;
+//     using Tmds.WebSockets;
+//     using System;
+//     using System.Collections.Generic;
+//     using Newtonsoft.Json;
 
-    public sealed class UaSocketManager
-    {
-        private static volatile UaSocketManager instance;
-        private static object syncRoot = new Object();
+//     public class UaSocketMessage
+//     {
+//         public string SocketId { get; set; }
+//         public string Action { get; set; }
+//         public dynamic ActionParameters { get; set; }
+//         public string Message { get; set; }
+//     }
 
-        private ConcurrentDictionary<string, WebSocket> _clients;
+//     public sealed class UaSocketManager
+//     {
+//         private static volatile UaSocketManager instance;
+//         private static object syncRoot = new Object();
 
-        private UaSocketManager()
-        {
-            _clients = new ConcurrentDictionary<string, WebSocket>();
-        }
+//         private ConcurrentDictionary<string, WebSocket> _clients;
 
-        public ICollection<string> SocketIds
-        {
-            get
-            {
-                return _clients.Keys;
-            }
-        }
+//         private UaSocketManager()
+//         {
+//             _clients = new ConcurrentDictionary<string, WebSocket>();
+//         }
 
-        public void RegisterSocket(string socketId, WebSocket socket)
-        {
-            _clients.AddOrUpdate(socketId, socket, (_socketId, _socket) => socket);
-        }
+//         public ICollection<string> SocketIds
+//         {
+//             get
+//             {
+//                 return _clients.Keys;
+//             }
+//         }
 
-        public bool DeregisterSocket(string socketId)
-        {
-            WebSocket _socket;
-            return _clients.TryRemove(socketId, out _socket);
-        }
+//         public void RegisterSocket(string socketId, WebSocket socket)
+//         {
+//             _clients.AddOrUpdate(socketId, socket, (_socketId, _socket) => socket);
+//         }
 
-        public IEnumerable<KeyValuePair<string, string>> SendMessage(IEnumerable<string> socketIds, UaSocketMessage message)
-        {
-            var responses = new List<KeyValuePair<string, string>>();
+//         public bool DeregisterSocket(string socketId)
+//         {
+//             WebSocket _socket;
+//             return _clients.TryRemove(socketId, out _socket);
+//         }
 
-            foreach (var socketId in socketIds)
-                responses.Add(
-                    new KeyValuePair<string, string>(
-                        socketId,
-                        SendMessage(socketId, message)
-                    )
-                );
+//         public IEnumerable<KeyValuePair<string, string>> SendMessage(IEnumerable<string> socketIds, UaSocketMessage message)
+//         {
+//             var responses = new List<KeyValuePair<string, string>>();
 
-            return responses;
-        }
+//             foreach (var socketId in socketIds)
+//                 responses.Add(
+//                     new KeyValuePair<string, string>(
+//                         socketId,
+//                         SendMessage(socketId, message)
+//                     )
+//                 );
 
-        public IEnumerable<KeyValuePair<WebSocket, string>> SendMessage(IEnumerable<WebSocket> sockets, UaSocketMessage message)
-        {
-            var responses = new List<KeyValuePair<WebSocket, string>>();
+//             return responses;
+//         }
 
-            foreach (var socket in sockets)
-                responses.Add(
-                    new KeyValuePair<WebSocket, string>(
-                        socket,
-                        SendMessage(socket, message)
-                    )
-                );
+//         public IEnumerable<KeyValuePair<WebSocket, string>> SendMessage(IEnumerable<WebSocket> sockets, UaSocketMessage message)
+//         {
+//             var responses = new List<KeyValuePair<WebSocket, string>>();
 
-            return responses;
-        }
+//             foreach (var socket in sockets)
+//                 responses.Add(
+//                     new KeyValuePair<WebSocket, string>(
+//                         socket,
+//                         SendMessage(socket, message)
+//                     )
+//                 );
 
-        public string SendMessage(string socketId, UaSocketMessage message)
-        {
-            WebSocket clientSocket;
+//             return responses;
+//         }
 
-            if (_clients.TryGetValue(socketId, out clientSocket))
-                return SendMessage(clientSocket, message);
-            else
-                return string.Format("Could not find socket with id = '{0}'", socketId);
-        }
+//         public string SendMessage(string socketId, UaSocketMessage message)
+//         {
+//             WebSocket clientSocket;
 
-        public string SendMessage(WebSocket socket, UaSocketMessage message)
-        {
-            try
-            {
-                string msgString = JsonConvert.SerializeObject(message);
+//             if (_clients.TryGetValue(socketId, out clientSocket))
+//                 return SendMessage(clientSocket, message);
+//             else
+//                 return string.Format("Could not find socket with id = '{0}'", socketId);
+//         }
 
-                socket.SendAsync(msgString);
+//         public string SendMessage(WebSocket socket, UaSocketMessage message)
+//         {
+//             try
+//             {
+//                 string msgString = JsonConvert.SerializeObject(message);
 
-                return null;
-            }
-            catch (Exception exc)
-            {
-                return exc.Message;
-            }
-        }
+//                 socket.SendAsync(msgString);
 
+//                 return null;
+//             }
+//             catch (Exception exc)
+//             {
+//                 return exc.Message;
+//             }
+//         }
 
+//         public static UaSocketManager Instance
+//         {
+//             get
+//             {
+//                 if (instance == null)
+//                 {
+//                     lock (syncRoot)
+//                     {
+//                         if (instance == null)
+//                             instance = new UaSocketManager();
+//                     }
+//                 }
 
-        public static UaSocketManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new UaSocketManager();
-                    }
-                }
-
-                return instance;
-            }
-        }
-    }
-}
+//                 return instance;
+//             }
+//         }
+//     }
+// }
